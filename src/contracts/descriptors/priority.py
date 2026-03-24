@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from enum import Enum
 from typing import Union, Dict
+from src.error.task_errors import PriorityInvalidError, PriorityTypeError
 
 
 class Priority(Enum):
@@ -14,6 +15,7 @@ class Priority(Enum):
         return self.value
 
 class PriorityDescriptor:
+    """Дата-дескриптор priority. Если ничего не присваивать, то по умолчанию priority=средний"""
     def __init__(self):
         self._storage: Dict[object, Priority] = {}
 
@@ -26,9 +28,9 @@ class PriorityDescriptor:
             try:
                 self._storage[obj] = Priority(value.lower())
             except AttributeError:
-                raise TypeError(f"Неверный тип: {type(value)}")
+                raise PriorityTypeError(type(value))
             except ValueError:
-                raise ValueError(f"Недопустимый приоритет: {value}")
+                raise PriorityInvalidError(value, allowed_values=[i.value for i in Priority])
         
     def __get__(self, obj, objtype=None) -> Union[PriorityDescriptor, Priority]:
         if obj is None:

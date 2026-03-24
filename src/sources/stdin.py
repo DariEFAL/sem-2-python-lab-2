@@ -14,7 +14,7 @@ def check_stdin(task: list[str], line_number: int) -> dict[str, str]:
         dict = {}
 
         for i in task:
-             key, value = i.split(":")
+             key, value = i.split("=")
              if key not in ("text", "priority", "status"):
                   raise ValueError
              dict[key] = value
@@ -33,7 +33,8 @@ class StdinSource:
 
     def get_tasks(self) -> Iterable[Task]:
         """
-        Возвращает задачи полученные из stdin. Пользователь вводит строго сначала имя поля, потом его значение через : : text:текст priority:приоритет status:статус
+        Возвращает задачи полученные из stdin. Пользователь вводит строго сначала имя поля, потом его значение через "=". 
+        А между полями " ;; ": text=текст ;; priority=приоритет ;; status=статус. Чтобы закончить ввод ввести cntr+D.
         :param argumentes: None
         :return: Iterable[Task]
         """
@@ -44,7 +45,7 @@ class StdinSource:
             if not line:
                 continue
 
-            line = line.split()
+            line = line.split(" ;; ")
 
             task = check_stdin(line, line_number)
             if "error" in task:

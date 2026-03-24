@@ -40,11 +40,12 @@ class JsonSource:
                 if "error" in task:
                     continue
 
+                task_id = task.get("id", None)
                 task_text = task.get("text", None)
                 task_priority = task.get("priority", None)
                 task_status = task.get("status", None)
 
                 yield Task(
-                    text=task_text, priority=task_priority, status=task_status
+                    id=task_id, text=task_text, priority=task_priority, status=task_status
                 )
 

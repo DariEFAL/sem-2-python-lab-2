@@ -41,7 +41,7 @@ def read(
     task_count = 0
     for task in inbox.iter_task():
         task_count += 1
-        typer.echo(f"{task.id} |{task.creation_time}| {task.text}. Приоритет: {task.priority}. Статус: {task.status}")
+        typer.echo(task)
     
     typer.echo(f"Всего задач: {task_count}")
 

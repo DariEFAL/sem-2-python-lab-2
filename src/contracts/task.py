@@ -5,15 +5,16 @@ from src.contracts.descriptors.id import IdDescriptor
 from src.contracts.descriptors.text import TextDescriptor
 from src.contracts.descriptors.priority import Priority, PriorityDescriptor
 from src.contracts.descriptors.status import Status, StatusDescriptor
+from src.error.task_errors import TaskStatusError
 
 
 class Task:
-    __slots__ = ('creation_time',)
-
     id = IdDescriptor()
     text = TextDescriptor()
     priority = PriorityDescriptor()
     status = StatusDescriptor()
+
+    __slots__ = ('_creation_time',)
 
     def __init__(self, *, 
                  text: str, 
@@ -25,11 +26,34 @@ class Task:
         self.text = text
         self.priority = priority
         self.status = status
-        self.creation_time = datetime.now()
+        self._creation_time = datetime.now()
+
+    @property
+    def creation_time(self):
+        """Время создания (только для чтения)"""
+        return self._creation_time
 
     @property
     def age(self) -> timedelta:
+        """Сколько прошло времени с момента создания задачи"""
         return datetime.now() - self.creation_time
+    
+    def start(self):
+        """Начать выполнение задачи"""
+        if self.status != "pending":
+            raise TaskStatusError(self.status)
+        
+        self.status = "in_progress"
+    
+    def complete(self):
+        """Завершить задачу"""
+        if self.status == "completed":
+            raise TaskStatusError(self.status)
+        
+        self.status = "completed"
+
+    def __str__(self):
+        return f"[{self.creation_time} | {self.status} | {self.priority}] {self.text}"
     
 
     

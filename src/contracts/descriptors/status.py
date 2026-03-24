@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from enum import Enum
 from typing import Union, Dict
+from src.error.task_errors import StatusInvalidError, StatusTypeError
 
 
 class Status(Enum):
@@ -13,6 +14,7 @@ class Status(Enum):
         return self.value
     
 class StatusDescriptor:
+    """Дата-дескриптор status. Если ничего не присваивать, то по умолчанию status=ожидает"""
     def __init__(self):
         self._storage: Dict[object, Status] = {}
 
@@ -25,9 +27,9 @@ class StatusDescriptor:
             try:
                 self._storage[obj] = Status(value.lower())
             except AttributeError:
-                raise TypeError(f"Неверный тип: {type(value)}")
+                raise StatusTypeError(type(value))
             except ValueError:
-                raise ValueError(f"Недопустимый статус: {value}")
+                raise StatusInvalidError(value, allowed_values=[i.value for i in Status])
             
     def __get__(self, obj, objtype=None) -> Union[StatusDescriptor, Status]:
         if obj is None:
