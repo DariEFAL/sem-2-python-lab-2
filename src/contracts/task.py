@@ -40,17 +40,17 @@ class Task:
     
     def start(self):
         """Начать выполнение задачи"""
-        if self.status != "pending":
+        if self.status != Status.PENDING:
             raise TaskStatusError(self.status)
         
-        self.status = "in_progress"
+        self.status = Status.IN_PROGRESS
     
     def complete(self):
         """Завершить задачу"""
-        if self.status == "completed":
+        if self.status == Status.COMPLETED:
             raise TaskStatusError(self.status)
         
-        self.status = "completed"
+        self.status = Status.COMPLETED
 
     def __str__(self):
         return f"[{self.creation_time} | {self.status} | {self.priority}] {self.text}"

@@ -10,6 +10,8 @@ class TextDescriptor:
         self._storage: Dict[str] = {}
     
     def __set__(self, obj, new_text: str):
+        new_text = new_text.strip()
+        
         if new_text is None or new_text == "":
            raise TextEmptyError()
         elif isinstance(new_text, str):
