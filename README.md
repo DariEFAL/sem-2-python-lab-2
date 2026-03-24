@@ -1,4 +1,4 @@
-# Лабораторная работа 1, семестр 2, python.
+# Лабораторная работа 2, семестр 2, python.
 
 ```
  git clone https://github.com/DariEFAL/sem-2-python-lab-1.git
@@ -21,7 +21,6 @@
 * stdin: python -m main --stdin
 * genirator: python -m main --gen *кол-во задач, которые надо сгенерировать*
 
-# Принятые решения:
-* cli реализован через typer
-* Задачи из всех источников получают новое id, даже если есть старое. Реализовано спомощью uuid.uuid4() 
-* 
+# Различие 1) Non-data descriptors и 2) data descriptors:
+1) Не имеет метода __set__. Есть только метод __get__. Пример: метод age в классе Task
+2) Есть __get__ и __set__. Пример любой дескриптор из папки descriptors

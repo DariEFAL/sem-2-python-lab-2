@@ -1,14 +1,14 @@
 from typing import Union
-from datetime import datetime
-#src.contracts.
-from descriptors.id import IdDescriptor
-from descriptors.text import TextDescriptor
-from descriptors.priority import Priority, PriorityDescriptor
-from descriptors.status import Status, StatusDescriptor
+from datetime import datetime, timedelta
+
+from src.contracts.descriptors.id import IdDescriptor
+from src.contracts.descriptors.text import TextDescriptor
+from src.contracts.descriptors.priority import Priority, PriorityDescriptor
+from src.contracts.descriptors.status import Status, StatusDescriptor
 
 
 class Task:
-    __slots__ = ()
+    __slots__ = ('creation_time',)
 
     id = IdDescriptor()
     text = TextDescriptor()
@@ -26,6 +26,11 @@ class Task:
         self.priority = priority
         self.status = status
         self.creation_time = datetime.now()
+
+    @property
+    def age(self) -> timedelta:
+        return datetime.now() - self.creation_time
+    
 
     
 
