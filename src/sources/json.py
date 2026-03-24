@@ -3,12 +3,13 @@ import json
 from collections.abc import Iterable
 from pathlib import Path
 from dataclasses import dataclass
+from typing import Dict
 
 from src.contracts.task import Task
 from src.logging import logging_result
 
 
-def parse_json_file(line: str) -> dict[str, str]:
+def parse_json_file(line: str) -> Dict[str, str]:
     """Делает из строки словарь"""
     return json.loads(line)
 

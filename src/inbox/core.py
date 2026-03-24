@@ -2,7 +2,6 @@ from collections.abc import Sequence, Iterable
 
 from src.contracts.task_source import TaskSource
 from src.contracts.task import Task
-from src.logging import logging_result
 from src.error.sources_error import InvalidSourceError
 
 

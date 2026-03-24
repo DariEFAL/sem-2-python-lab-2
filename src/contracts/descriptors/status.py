@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Union, Dict
+from typing import Union, Optional, Dict, Type
 from src.error.task_errors import StatusInvalidError, StatusTypeError
 
 
@@ -10,7 +10,7 @@ class Status(Enum):
     IN_PROGRESS = "в процессе"
     COMPLETED = "выполнено"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
     
 class StatusDescriptor:
@@ -18,7 +18,7 @@ class StatusDescriptor:
     def __init__(self):
         self._storage: Dict[object, Status] = {}
 
-    def __set__(self, obj, value: Union[Status, str, None]):
+    def __set__(self, obj: object, value: Union[Status, str, None]) -> None:
         if value is None:
             self._storage[obj] = Status.PENDING
         elif isinstance(value, Status):
@@ -31,7 +31,7 @@ class StatusDescriptor:
             except ValueError:
                 raise StatusInvalidError(value, allowed_values=[i.value for i in Status])
             
-    def __get__(self, obj, objtype=None) -> Union[StatusDescriptor, Status]:
+    def __get__(self, obj: object, objtype: Optional[Type] = None) -> Union[StatusDescriptor, Status]:
         if obj is None:
             return self
         

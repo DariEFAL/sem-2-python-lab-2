@@ -3,13 +3,14 @@ import sys
 from dataclasses import dataclass
 from typing import TextIO
 from collections.abc import Iterable
+from typing import Dict
 
 from src.contracts.task import Task
 from src.logging import logging_result
 from src.error.sources_error import InvalidFieldError
 
 
-def check_stdin(task: list[str], line_number: int) -> dict[str, str]:
+def check_stdin(task: list[str], line_number: int) -> Dict[str, str]:
     """Проверяет данные, которые ввел пользователь"""
     dict = {}
 

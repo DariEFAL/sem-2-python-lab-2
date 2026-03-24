@@ -15,7 +15,7 @@ def logging_result(result: bool,
                    id: Optional[str] = None, 
                    name_source: Optional[str] = None,
                    error_line: Optional[int] = None, 
-                   error_text: Optional[str] = None):
+                   error_text: Optional[str] = None) -> None:
     
     if result:
         logger.info(f"Задача {id} успешно обработана")

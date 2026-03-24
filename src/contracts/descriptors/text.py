@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union, Dict
+from typing import Union, Optional, Dict, Type
 from src.error.task_errors import TextEmptyError, TextTypeError
 
 
@@ -9,7 +9,7 @@ class TextDescriptor:
     def __init__(self):
         self._storage: Dict[str] = {}
     
-    def __set__(self, obj, new_text: str):
+    def __set__(self, obj: object, new_text: str) -> None:
         new_text = new_text.strip()
         
         if new_text is None or new_text == "":
@@ -20,7 +20,7 @@ class TextDescriptor:
             raise TextTypeError(type(new_text))
 
 
-    def __get__(self, obj, objtype=None) -> Union[TextDescriptor, str]:
+    def __get__(self, obj: object, objtype: Optional[Type] = None) -> Union[TextDescriptor, str]:
         if obj is None:
             return self
         

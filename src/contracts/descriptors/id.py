@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from uuid import uuid4
-from typing import Union, Dict, Set
+from typing import Union, Optional, Dict, Set, Type
 from src.error.task_errors import IdDuplicateError
 
 
@@ -11,7 +11,7 @@ class IdDescriptor:
         self._storage: Dict[object, str] = {}
         self._used_ids: Set[str] = set()
 
-    def __set__(self, obj, value: Union[None, str, int]):
+    def __set__(self, obj: object, value: Union[None, str, int]) -> None:
         if value is None or value == "":
             value = str(uuid4())
 
@@ -26,7 +26,7 @@ class IdDescriptor:
         self._used_ids.add(value)
         self._storage[obj] = value
 
-    def __get__(self, obj, objtype=None) -> Union[IdDescriptor, str]:
+    def __get__(self, obj: object, objtype: Optional[Type] = None) -> Union[IdDescriptor, str]:
         if obj is None:
             return self
 

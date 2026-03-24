@@ -24,3 +24,4 @@
 # Различие 1) Non-data descriptors и 2) data descriptors:
 1) Не имеет метода __set__. Есть только метод __get__. Пример: метод age в классе Task
 2) Есть __get__ и __set__. Пример любой дескриптор из папки descriptors
+

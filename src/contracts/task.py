@@ -18,9 +18,9 @@ class Task:
 
     def __init__(self, *, 
                  text: str, 
-                 id: Union[str, int] = None, 
-                 priority: Union[Priority, str] = None, 
-                 status: Union[Status, str] = None):
+                 id: Union[str, int, None] = None, 
+                 priority: Union[Priority, str, None] = None, 
+                 status: Union[Status, str, None] = None):
         
         self.id = id
         self.text = text
@@ -29,8 +29,8 @@ class Task:
         self._creation_time = datetime.now()
 
     @property
-    def creation_time(self):
-        """Время создания (только для чтения)"""
+    def creation_time(self) -> datetime:
+        """Время создания защищенный, только для чтения"""
         return self._creation_time
 
     @property
@@ -38,21 +38,21 @@ class Task:
         """Сколько прошло времени с момента создания задачи"""
         return datetime.now() - self.creation_time
     
-    def start(self):
+    def start(self) -> None:
         """Начать выполнение задачи"""
         if self.status != Status.PENDING:
             raise TaskStatusError(self.status)
         
         self.status = Status.IN_PROGRESS
     
-    def complete(self):
+    def complete(self) -> None:
         """Завершить задачу"""
         if self.status == Status.COMPLETED:
             raise TaskStatusError(self.status)
         
         self.status = Status.COMPLETED
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"[{self.creation_time} | {self.status} | {self.priority}] {self.text}"
     
 

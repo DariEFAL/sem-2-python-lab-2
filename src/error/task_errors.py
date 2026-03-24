@@ -1,3 +1,6 @@
+from typing import Type, Optional, List
+from enum import Enum
+
 class TaskError(Exception):
     """Базовое исключение для всех ошибок, связанных с задачами"""
     pass
@@ -9,7 +12,7 @@ class IdError(TaskError):
 
 class IdDuplicateError(IdError):
     """Исключение: ID уже существует"""
-    def __init__(self, value):
+    def __init__(self, value: str):
         self.value = value
         super().__init__(f"ID '{value}' уже используется. ID должны быть уникальными.")
 
@@ -25,7 +28,7 @@ class TextEmptyError(TextError):
 
 class TextTypeError(TextError):
     """Исключение: неверный тип текста"""
-    def __init__(self, type):
+    def __init__(self, type: Type):
         self.type = type
         super().__init__(f"Описание задачи должно быть строкой (str), получен {type.__name__}")
 
@@ -36,22 +39,16 @@ class PriorityError(TaskError):
 
 class PriorityInvalidError(PriorityError):
     """Исключение: недопустимое значение приоритета"""
-    def __init__(self, value, allowed_values=None):
+    def __init__(self, value: Enum, allowed_values: Optional[List[str]] = None):
         self.value = value
         self.allowed_values = allowed_values or ["низкий", "средний", "высокий"]
-        super().__init__(
-            f"Недопустимый приоритет: '{value}'. "
-            f"Допустимые значения: {", ".join(self.allowed_values)}"
-        )
+        super().__init__(f"Недопустимый приоритет: '{value}'. Допустимые значения: {", ".join(self.allowed_values)}")
 
 class PriorityTypeError(PriorityError):
     """Исключение: неверный тип приоритета"""
-    def __init__(self, type):
+    def __init__(self, type: Type):
         self.type = type
-        super().__init__(
-            f"Приоритет должен быть Priority, str или None, "
-            f"получен {type.__name__}"
-        )
+        super().__init__(f"Приоритет должен быть Priority, str или None, получен {type.__name__}")
 
 
 class StatusError(TaskError):
@@ -60,26 +57,19 @@ class StatusError(TaskError):
 
 class StatusInvalidError(StatusError):
     """Исключение: недопустимое значение статуса"""
-    def __init__(self, value, allowed_values=None):
+    def __init__(self, value: Enum, allowed_values: Optional[List[str]] = None):
         self.value = value
         self.allowed_values = allowed_values or ["pending", "in_progress", "completed"]
-        super().__init__(
-            f"Недопустимый статус: '{value}'. "
-            f"Допустимые значения: {", ".join(self.allowed_values)}"
-        )
+        super().__init__(f"Недопустимый статус: '{value}'. Допустимые значения: {", ".join(self.allowed_values)}")
 
 class StatusTypeError(StatusError):
     """Исключение: неверный тип статуса"""
-    def __init__(self, type):
+    def __init__(self, type: Type):
         self.type = type
-        super().__init__(
-            f"Статус должен быть Status, str или None, "
-            f"получен {type.__name__}"
-        )
+        super().__init__(f"Статус должен быть Status, str или None, получен {type.__name__}")
 
 
 class TaskStatusError(TaskError):
     """Исключение: недопустимая операция для текущего состояния задачи"""
-    def __init__(self, current_status):
-        self.current_status = current_status
+    def __init__(self, current_status: Enum):
         super().__init__(f"Нельзя применить операцию на задачу в статусе '{current_status}'")
