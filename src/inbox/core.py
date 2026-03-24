@@ -1,5 +1,3 @@
-import uuid
-
 from collections.abc import Sequence, Iterable
 
 from src.contracts.task_source import TaskSource
