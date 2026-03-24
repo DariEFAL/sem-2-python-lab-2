@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 
 logging.basicConfig(level=logging.INFO,
@@ -10,8 +11,23 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger("tasks")
 
 
-def logging_result(result: bool, id: str = None, error_text: str = None):
+def logging_result(result: bool, 
+                   id: Optional[str] = None, 
+                   name_source: Optional[str] = None,
+                   error_line: Optional[int] = None, 
+                   error_text: Optional[str] = None):
+    
     if result:
         logger.info(f"Задача {id} успешно обработана")
     else:
-        logger.error(f"{error_text}")
+        all_error = ""
+
+        if not (name_source is None):
+            all_error += f"{name_source}: "
+
+        if not (error_line is None):
+            all_error += f"в строке {error_line}: "
+
+        all_error += f"{error_text}"
+
+        logger.error(all_error)

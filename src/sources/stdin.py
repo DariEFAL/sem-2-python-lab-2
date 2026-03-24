@@ -6,24 +6,20 @@ from collections.abc import Iterable
 
 from src.contracts.task import Task
 from src.logging import logging_result
+from src.error.sources_error import InvalidFieldError
 
 
 def check_stdin(task: list[str], line_number: int) -> dict[str, str]:
     """Проверяет данные, которые ввел пользователь"""
-    try:
-        dict = {}
+    dict = {}
 
-        for i in task:
-             key, value = i.split("=")
-             if key not in ("text", "priority", "status"):
-                  raise ValueError
-             dict[key] = value
+    for i in task:
+        key, value = i.split("=")
+        if key not in ("text", "priority", "status"):
+            raise InvalidFieldError(key, line_number)
+        dict[key] = value
 
-        return dict
-    except ValueError:
-        logging_result(False, id=None, error_text=f"Неправильный ввод stdin в строке {line_number}: задача может состоять только из двух аргументов: id и text")
-        print(f"Неправильный ввод stdin в строке {line_number}: задача может состоять только из двух аргументов: id и text")
-        return {"error": f"Неправильный ввод stdin в строке {line_number}: задача может состоять только из двух аргументов: id и text"}
+    return dict
 
 
 @dataclass(frozen=True)
@@ -38,7 +34,7 @@ class StdinSource:
         :param argumentes: None
         :return: Iterable[Task]
         """
-        for line_number, line in enumerate(self.stream):
+        for line_number, line in enumerate(self.stream, start=1):
 
             line = line.strip()
 
@@ -47,14 +43,20 @@ class StdinSource:
 
             line = line.split(" ;; ")
 
-            task = check_stdin(line, line_number)
-            if "error" in task:
-                    continue
-                
+            try:
+                task = check_stdin(line, line_number)
+            except Exception as e:
+                logging_result(False, error_text=str(e))
+                continue
+            
             task_text = task.get("text", None)
             task_priority = task.get("priority", None)
             task_status = task.get("status", None)
+
+            try:
+                task = Task(text=task_text, priority=task_priority, status=task_status)
+            except Exception as e:
+                logging_result(False, name_source=self.name, error_line=line_number, error_text=str(e))
+                continue
             
-            yield Task(
-                text=task_text, priority=task_priority, status=task_status
-            )
+            yield task

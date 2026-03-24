@@ -8,14 +8,9 @@ from src.contracts.task import Task
 from src.logging import logging_result
 
 
-def parse_json_file(line: str, path: Path, line_number: int) -> dict[str, str]:
+def parse_json_file(line: str) -> dict[str, str]:
     """Делает из строки словарь"""
-    try:
-        return json.loads(line)
-    except json.JSONDecodeError as error:
-        logging_result(False, id=None, error_text=f"Неправильный ввод jsonl в {path} в строке {line_number}")
-        print(f"Неправильный ввод jsonl в {path} в строке {line_number}")
-        return {"error": f"Неправильный ввод jsonl в {path} в строке {line_number}"}
+    return json.loads(line)
 
 
 @dataclass(frozen=True)
@@ -36,16 +31,22 @@ class JsonSource:
                 if not line:
                     continue
 
-                task = parse_json_file(line, self.path, line_number)
-                if "error" in task:
+                try:
+                    task = parse_json_file(line)
+                except json.JSONDecodeError:
+                    logging_result(False, name_source=self.name, error_text=f"Строка {line_number} в {self.path} не является словарем")
                     continue
-
+                
                 task_id = task.get("id", None)
                 task_text = task.get("text", None)
                 task_priority = task.get("priority", None)
                 task_status = task.get("status", None)
 
-                yield Task(
-                    id=task_id, text=task_text, priority=task_priority, status=task_status
-                )
+                try:
+                    task = Task(id=task_id, text=task_text, priority=task_priority, status=task_status)
+                except Exception as e:
+                    logging_result(False, name_source=self.name, error_line=line_number, error_text=str(e))
+                    continue
+
+                yield task
 

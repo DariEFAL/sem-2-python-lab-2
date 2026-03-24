@@ -3,6 +3,7 @@ from collections.abc import Sequence, Iterable
 from src.contracts.task_source import TaskSource
 from src.contracts.task import Task
 from src.logging import logging_result
+from src.error.sources_error import InvalidSourceError
 
 
 class InboxApp:
@@ -17,9 +18,7 @@ class InboxApp:
         """
         for source in self.sources:
             if not isinstance(source, TaskSource):
-                logging_result(False, id=None, error_text="Источник должен быть типа TaskSource")
-                raise TypeError("Источник должен быть типа TaskSource")
+                raise InvalidSourceError(type(source))
             
             for task in source.get_tasks():
-                logging_result(True, id=task.id)
                 yield task

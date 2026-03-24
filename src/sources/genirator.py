@@ -2,6 +2,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 
 from src.contracts.task import Task
+from src.logging import logging_result
 
 
 @dataclass(frozen=True)
@@ -19,6 +20,10 @@ class GenSource:
 
             task_text = f"Сгенерирована задача номер {i}"
 
-            yield Task(
-                text=task_text
-            )
+            try:
+                task = Task(text=task_text)
+            except Exception as e:
+                logging_result(False, name_source=self.name, error_line=i, error_text=str(e))
+                continue
+            
+            yield task

@@ -7,6 +7,7 @@ from src.inbox.core import InboxApp
 from src.sources.json import JsonSource
 from src.sources.genirator import GenSource
 from src.sources.stdin import StdinSource
+from src.logging import logging_result
 
 cli = typer.Typer()
 
@@ -37,11 +38,16 @@ def read(
     for count in gen:
         sources.append(GenSource(count))
     
-    inbox = InboxApp(sources)
-    task_count = 0
-    for task in inbox.iter_task():
-        task_count += 1
-        typer.echo(task)
+    try:
+        inbox = InboxApp(sources)
+        task_count = 0
+        for task in inbox.iter_task():
+            task_count += 1
+            logging_result(True, id=task.id)
+            typer.echo(task)
+    except Exception as e:
+        typer.echo(str(e))
+        logging_result(False, error_text=str(e))
     
     typer.echo(f"Всего задач: {task_count}")
 
